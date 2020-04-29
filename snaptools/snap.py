@@ -40,6 +40,7 @@ from builtins import str
 import bz2
 import itertools
 import multiprocessing
+import pdb
 
 try:
     import snaptools.utilities
@@ -807,6 +808,7 @@ def dump_read(snap_file,
     barcode_list = [list(barcode_chunk) for barcode_chunk in barcode_list];
     nChunk = len(barcode_list);
     
+    #pdb.set_trace()
     # write fragments down
     if output_file.endswith(".gz"):
         fout = gzip.open(output_file, "wb")
@@ -816,7 +818,12 @@ def dump_read(snap_file,
             frag_list = getFragFromBarcode(snap_file, barcode_list[i], barcode_dict_ref);
             for item in frag_list:
                 if(len(item) > 0):
-                    fout.write(("\t".join(map(str, item)) + "\n").encode('utf-8'));
+                    #fout.write(("\t".join(map(str, item)) + "\n").encode('utf-8'));
+                    #THIS IS A HACK AND SHOULD BE FIXED ELSEWHERE SO THE SEQNAME IS NOT STORED AS b'SEQNAME'
+                    #item[0] = item[0].decode('utf-8')
+                    reitem = list(item)
+                    reitem[0] = reitem[0].decode('utf-8')
+                    fout.write(("\t".join(map(str, reitem)) + "\n").encode('utf-8'));
             del frag_list
     elif output_file.endswith(".bz2"):
         fout = gzip.open(output_file, "wb")
@@ -826,7 +833,12 @@ def dump_read(snap_file,
             frag_list = getFragFromBarcode(snap_file, barcode_list[i], barcode_dict_ref);
             for item in frag_list:
                 if(len(item) > 0):
-                    fout.write(("\t".join(map(str, item)) + "\n").encode('utf-8'));
+                    #fout.write(("\t".join(map(str, item)) + "\n").encode('utf-8'));
+                    #THIS IS A HACK AND SHOULD BE FIXED ELSEWHERE SO THE SEQNAME IS NOT STORED AS b'SEQNAME'
+                    #item[0] = item[0].decode('utf-8')
+                    reitem = list(item)
+                    reitem[0] = reitem[0].decode('utf-8')
+                    fout.write(("\t".join(map(str, reitem)) + "\n").encode('utf-8'));
             del frag_list
     else:
         fout = open(output_file, "w")
@@ -836,7 +848,12 @@ def dump_read(snap_file,
             frag_list = getFragFromBarcode(snap_file, barcode_list[i], barcode_dict_ref);
             for item in frag_list:
                 if(len(item) > 0):
-                    fout.write(("\t".join(map(str, item)) + "\n"));
+                    #fout.write(("\t".join(map(str, item)) + "\n").encode('utf-8'));
+                    #THIS IS A HACK AND SHOULD BE FIXED ELSEWHERE SO THE SEQNAME IS NOT STORED AS b'SEQNAME'
+                    #item[0] = item[0].decode('utf-8')
+                    reitem = list(item)
+                    reitem[0] = reitem[0].decode('utf-8')
+                    fout.write(("\t".join(map(str, reitem)) + "\n"));
             del frag_list
     fout.close()
     return 0

@@ -36,6 +36,7 @@ import subprocess
 import shlex
 import tempfile
 import warnings
+import pdb
 
 try:
     import snaptools.utilities
@@ -132,6 +133,7 @@ def snap_pmat(snap_file,
     
     # extract the barcodes
     barcode_dict = getBarcodesFromSnap(snap_file);
+    #print(barcode_dict)
 
     # create the peaks;
     peak_dict = collections.OrderedDict(); 
@@ -139,7 +141,7 @@ def snap_pmat(snap_file,
     for item in pybedtools.BedTool(peak_file):
         peak_dict[(str(item.chrom), item.start, item.end)] = i;
         i += 1;
-    
+    #print(peak_dict)
     # first cut the fragments into small piecies, write them down
     fout_frag = tempfile.NamedTemporaryFile(delete=False, dir=tmp_folder);
     dump_read(snap_file, fout_frag.name, buffer_size, None, tmp_folder, True);
@@ -166,7 +168,8 @@ def snap_pmat(snap_file,
         for peak_id in d:
             IDY_LIST.append(peak_id);
             VAL_LIST.append(d[peak_id]);
-        
+    
+    #pdb.set_trace()
     f = h5py.File(snap_file, "a", libver='earliest');
     dt = h5py.special_dtype(vlen=bytes);
     f.create_dataset("PM/peakChrom", data=[np.string_(key[0]) for key in peak_dict], dtype=h5py.special_dtype(vlen=bytes), compression="gzip", compression_opts=9);
